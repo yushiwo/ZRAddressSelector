@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="show_address_dialog">弹出地址选择dialog</string>
+</resources>
