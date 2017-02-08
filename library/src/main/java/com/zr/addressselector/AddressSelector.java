@@ -650,13 +650,17 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
         return listener;
     }
 
+    /**
+     * 设置回调接口
+     * @param listener
+     */
     public void setOnAddressSelectedListener(OnAddressSelectedListener listener) {
         this.listener = listener;
     }
 
     /**
      * 设置省列表
-     * @param provinces
+     * @param provinces 省份列表
      */
     public void setProvinces(List<Province> provinces){
         handler.sendMessage(Message.obtain(handler, WHAT_PROVINCES_PROVIDED, provinces));
@@ -664,7 +668,7 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
 
     /**
      * 设置市列表
-     * @param cities
+     * @param cities 城市列表
      */
     public void setCities(List<City> cities){
         handler.sendMessage(Message.obtain(handler, WHAT_CITIES_PROVIDED, cities));
@@ -672,7 +676,7 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
 
     /**
      * 设置区列表
-     * @param countries
+     * @param countries 区/县列表
      */
     public void setCountries(List<County> countries){
         handler.sendMessage(Message.obtain(handler, WHAT_COUNTIES_PROVIDED, countries));
@@ -680,7 +684,7 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
 
     /**
      * 设置街道列表
-     * @param streets
+     * @param streets 街道列表
      */
     public void setStreets(List<Street> streets){
         handler.sendMessage(Message.obtain(handler, WHAT_STREETS_PROVIDED, streets));
