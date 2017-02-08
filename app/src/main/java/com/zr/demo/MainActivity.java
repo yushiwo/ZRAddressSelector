@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements OnAddressSelected
                 // TODO: 17/2/7 实时请求省份数据
                 Province province = new Province();
                 province.id = 1;
-                province.name = "省份";
+                province.name = "省份" + province.id;
                 dialog.getSelector().setProvinces(Collections.singletonList(province));
             }
         });
@@ -63,12 +63,12 @@ public class MainActivity extends AppCompatActivity implements OnAddressSelected
         City city1 = new City();
         city1.province_id = province.id;
         city1.id = province.id * 100 + 1;
-        city1.name = "城市1";
+        city1.name = "城市" + city1.id;
 
         City city2 = new City();
         city2.province_id = province.id;
         city2.id = province.id * 100 + 2;
-        city2.name = "城市2";
+        city2.name = "城市" + city2.id;
 
         List<City> list = new ArrayList<>();
         list.add(city1);
@@ -86,12 +86,12 @@ public class MainActivity extends AppCompatActivity implements OnAddressSelected
             County county11 = new County();
             county11.city_id = city.id;
             county11.id = city.id * 100 + 1;
-            county11.name = "区县11";
+            county11.name = "区县" + county11.id;
 
             County county12 = new County();
             county12.city_id = city.id;
             county12.id = city.id * 100 + 2;
-            county12.name = "区县12";
+            county12.name = "区县" + county12.id;
 
             List<County> list = new ArrayList<>();
             list.add(county11);
@@ -101,12 +101,12 @@ public class MainActivity extends AppCompatActivity implements OnAddressSelected
             County county21 = new County();
             county21.city_id = city.id;
             county21.id = city.id * 100 + 1;
-            county21.name = "区县21";
+            county21.name = "区县" + county21.id;
 
             County county22 = new County();
             county22.city_id = city.id;
             county22.id = city.id * 100 + 2;
-            county22.name = "区县22";
+            county22.name = "区县" + county22.id;
 
             List<County> list2 = new ArrayList<>();
             list2.add(county21);
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnAddressSelected
         Street street = new Street();
         street.id = county.id * 100 + 1;
         street.county_id = county.id;
-        street.name = "街道";
+        street.name = "街道" + street.id;
 
         dialog.getSelector().setStreets(Collections.singletonList(street));
     }
