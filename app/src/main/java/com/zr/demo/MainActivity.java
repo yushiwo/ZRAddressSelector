@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.zr.addressselector.BottomDialog;
+import com.zr.addressselector.BottomSelectorDialog;
 import com.zr.addressselector.listener.OnAddressSelectedListener;
 import com.zr.addressselector.model.City;
 import com.zr.addressselector.model.County;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnAddressSelectedListener {
 
-    BottomDialog dialog;
+    BottomSelectorDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements OnAddressSelected
         buttonBottomDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog = new BottomDialog(MainActivity.this);
+                dialog = new BottomSelectorDialog(MainActivity.this);
                 dialog.setOnAddressSelectedListener(MainActivity.this);
                 dialog.show();
                 // TODO: 17/2/7 实时请求省份数据
