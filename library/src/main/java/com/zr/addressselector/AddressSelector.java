@@ -64,8 +64,11 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
                         tabIndex = INDEX_TAB_CITY;
 
                         // 缓存省-市数据
-                        int provinceId = cities.get(0).province_id;
-                        province2city.put(provinceId, cities);
+                        long provinceId = cities.get(0).province_id;
+                        if(!province2city.containsKey(provinceId)){
+                            province2city.put(provinceId, cities);
+                        }
+
                     } else {
                         // 次级无内容，回调
                         callbackInternal();
@@ -81,8 +84,11 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
                         tabIndex = INDEX_TAB_COUNTY;
 
                         // 缓存市-区数据
-                        int cityId = counties.get(0).city_id;
-                        city2country.put(cityId, counties);
+                        long cityId = counties.get(0).city_id;
+                        if(!city2county.containsKey(cityId)){
+                            city2county.put(cityId, counties);
+                        }
+
                     } else {
                         callbackInternal();
                     }
@@ -96,8 +102,10 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
                         listView.setAdapter(streetAdapter);
                         tabIndex = INDEX_TAB_STREET;
                         // 缓存市-区数据
-                        int countryId = streets.get(0).county_id;
-                        country2street.put(countryId, streets);
+                        long countryId = streets.get(0).county_id;
+                        if(!county2street.containsKey(countryId)){
+                            county2street.put(countryId, streets);
+                        }
                     } else {
                         callbackInternal();
                     }
@@ -140,11 +148,11 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
     private List<Street> streets;
 
     /** 缓存数据:省-市 */
-    private ArrayMap<Integer, List<City>> province2city = new ArrayMap<>();
+    private ArrayMap<Long, List<City>> province2city = new ArrayMap<>();
     /** 缓存数据:市-区 */
-    private ArrayMap<Integer, List<County>> city2country = new ArrayMap<>();
+    private ArrayMap<Long, List<County>> city2county = new ArrayMap<>();
     /** 缓存数据:区-街道 */
-    private ArrayMap<Integer, List<Street>> country2street = new ArrayMap<>();
+    private ArrayMap<Long, List<Street>> county2street = new ArrayMap<>();
 
     private int provinceIndex = INDEX_INVALID;
     private int cityIndex = INDEX_INVALID;
@@ -367,10 +375,12 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
                 this.streetIndex = INDEX_INVALID;
 
                 cityAdapter.notifyDataSetChanged();
+                System.out.println(city2county.toString());
 
                 // 有缓存则直接使用缓存,否则去重新请求
-                if(city2country.containsKey(city.id)){
-                    setCountries(city2country.get(city.id));
+                if(city2county.containsKey(city.id)){
+                    System.out.println("cityId = " + city.id);
+                    setCountries(city2county.get(city.id));
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     listener.onCitySelected(city);
@@ -393,8 +403,8 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
                 countyAdapter.notifyDataSetChanged();
 
                 // 有缓存则直接使用缓存,否则去重新请求
-                if(country2street.containsKey(county.id)){
-                    setStreets(country2street.get(county.id));
+                if(county2street.containsKey(county.id)){
+                    setStreets(county2street.get(county.id));
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     listener.onCountySelected(county);

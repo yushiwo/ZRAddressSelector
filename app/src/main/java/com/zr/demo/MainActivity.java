@@ -57,16 +57,17 @@ public class MainActivity extends AppCompatActivity implements OnAddressSelected
     @Override
     public void onProvinceSelected(Province province) {
         System.out.println("onProvinceSelected");
+        ToastUtils.showShort(this, "点击新省份,获取市数据");
 
         // TODO: 2017/2/5 请求城市数据
         City city1 = new City();
         city1.province_id = province.id;
-        city1.id = 1;
+        city1.id = province.id * 100 + 1;
         city1.name = "城市1";
 
         City city2 = new City();
         city2.province_id = province.id;
-        city2.id = 2;
+        city2.id = province.id * 100 + 2;
         city2.name = "城市2";
 
         List<City> list = new ArrayList<>();
@@ -77,43 +78,40 @@ public class MainActivity extends AppCompatActivity implements OnAddressSelected
 
     @Override
     public void onCitySelected(City city) {
-        System.out.println("onCitySelected");
+        System.out.println("onCitySelected " + city.id);
+        ToastUtils.showShort(this, "点击新城市,获取区县数据");
 
         // TODO: 2017/2/5 请求县乡数据
-        switch (city.id){
-            case 1:
-                County county11 = new County();
-                county11.city_id = city.id;
-                county11.id = 3;
-                county11.name = "乡镇11";
+        if(city.id == 101){
+            County county11 = new County();
+            county11.city_id = city.id;
+            county11.id = city.id * 100 + 1;
+            county11.name = "区县11";
 
-                County county12 = new County();
-                county12.city_id = city.id;
-                county12.id = 4;
-                county12.name = "乡镇12";
+            County county12 = new County();
+            county12.city_id = city.id;
+            county12.id = city.id * 100 + 2;
+            county12.name = "区县12";
 
-                List<County> list = new ArrayList<>();
-                list.add(county11);
-                list.add(county12);
-                dialog.getSelector().setCountries(list);
-                break;
+            List<County> list = new ArrayList<>();
+            list.add(county11);
+            list.add(county12);
+            dialog.getSelector().setCountries(list);
+        }else if(city.id == 102) {
+            County county21 = new County();
+            county21.city_id = city.id;
+            county21.id = city.id * 100 + 1;
+            county21.name = "区县21";
 
-            case 2:
-                County county21 = new County();
-                county21.city_id = city.id;
-                county21.id = 3;
-                county21.name = "乡镇21";
+            County county22 = new County();
+            county22.city_id = city.id;
+            county22.id = city.id * 100 + 2;
+            county22.name = "区县22";
 
-                County county22 = new County();
-                county22.city_id = city.id;
-                county22.id = 4;
-                county22.name = "乡镇22";
-
-                List<County> list2 = new ArrayList<>();
-                list2.add(county21);
-                list2.add(county22);
-                dialog.getSelector().setCountries(list2);
-                break;
+            List<County> list2 = new ArrayList<>();
+            list2.add(county21);
+            list2.add(county22);
+            dialog.getSelector().setCountries(list2);
         }
 
     }
@@ -121,9 +119,10 @@ public class MainActivity extends AppCompatActivity implements OnAddressSelected
     @Override
     public void onCountySelected(County county) {
         System.out.println("onCountySelected");
+        ToastUtils.showShort(this, "点击新区县数据,获取街道数据");
         // TODO: 17/2/7 实时获取街道信息
         Street street = new Street();
-        street.id = 4;
+        street.id = county.id * 100 + 1;
         street.county_id = county.id;
         street.name = "街道";
 

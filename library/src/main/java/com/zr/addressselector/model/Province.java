@@ -1,6 +1,6 @@
 package com.zr.addressselector.model;
 
 public class Province {
-    public int id;
+    public long id;
     public String name;
 }
