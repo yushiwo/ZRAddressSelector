@@ -6,6 +6,8 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ import com.zr.addressselector.model.Province;
 import com.zr.addressselector.model.Street;
 import com.zr.addressselector.util.ListUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -66,7 +69,12 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
                         // 缓存省-市数据
                         long provinceId = cities.get(0).province_id;
                         if(!province2city.containsKey(provinceId)){
-                            province2city.put(provinceId, cities);
+                            List<City> cityList = new ArrayList<>();
+                            ListUtils.copy(cities, cityList);
+                            province2city.put(provinceId, cityList);
+
+//                            System.out.println("***** save !!!!!");
+//                            System.out.println("cities = " + cities.toString());
                         }
 
                     } else {
@@ -86,7 +94,9 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
                         // 缓存市-区数据
                         long cityId = counties.get(0).city_id;
                         if(!city2county.containsKey(cityId)){
-                            city2county.put(cityId, counties);
+                            List<County> countyList = new ArrayList<>();
+                            ListUtils.copy(counties, countyList);
+                            city2county.put(cityId, countyList);
                         }
 
                     } else {
@@ -104,7 +114,9 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
                         // 缓存市-区数据
                         long countryId = streets.get(0).county_id;
                         if(!county2street.containsKey(countryId)){
-                            county2street.put(countryId, streets);
+                            List<Street> streetList = new ArrayList<>();
+                            ListUtils.copy(streets, streetList);
+                            county2street.put(countryId, streetList);
                         }
                     } else {
                         callbackInternal();
@@ -173,6 +185,33 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
         cityAdapter = new CityAdapter();
         countyAdapter = new CountyAdapter();
         streetAdapter = new StreetAdapter();
+    }
+
+    public void clearCacheData(){
+        province2city.clear();
+        city2county.clear();
+        county2street.clear();
+
+        // 清空子级数据
+        provinces = null;
+        cities = null;
+        counties = null;
+        streets = null;
+        provinceAdapter.notifyDataSetChanged();
+        cityAdapter.notifyDataSetChanged();
+        countyAdapter.notifyDataSetChanged();
+        streetAdapter.notifyDataSetChanged();
+
+        provinceIndex = INDEX_INVALID;
+        cityIndex = INDEX_INVALID;
+        countyIndex = INDEX_INVALID;
+        streetIndex = INDEX_INVALID;
+
+        tabIndex = INDEX_TAB_PROVINCE;
+        textViewProvince.setText("请选择");
+        updateTabsVisibility();
+        updateProgressVisibility();
+        updateIndicator();
     }
 
     private void initViews() {
@@ -688,6 +727,111 @@ public class AddressSelector implements AdapterView.OnItemClickListener {
      */
     public void setStreets(List<Street> streets){
         handler.sendMessage(Message.obtain(handler, WHAT_STREETS_PROVIDED, streets));
+    }
+
+
+    /**
+     * 有地址数据的时候,直接设置地址选择器
+     * @param provinces 省份列表
+     * @param provinceIndex 当前省在列表中的位置
+     * @param cities 当前省份的城市列表
+     * @param cityIndex 当前城市在列表中的位置
+     * @param countries 当前城市的区县列表
+     * @param countyIndex 当前区县在列表中的位置
+     */
+    public void setAddressSelector(@NonNull List<Province> provinces, int provinceIndex, @NonNull List<City> cities, int cityIndex, @Nullable List<County> countries, int countyIndex){
+        if(provinces == null || provinces.size() == 0){
+            return;
+        } else if(cities == null || cities.size() == 0){
+            setProvinces(provinces, provinceIndex);
+        } else {
+            setProvinces(provinces, provinceIndex);
+            setCities(cities, cityIndex);
+            setCountries(countries, countyIndex);
+        }
+        refreshSelector();
+    }
+
+    /**
+     * 隐藏loading
+     */
+    public void hideLoading(){
+        progressBar.setVisibility(View.GONE);
+    }
+
+
+
+
+    private void setProvinces(List<Province> provinces, int position){
+        if(provinces == null || provinces.size() == 0){
+            return;
+        }
+        this.provinces = provinces;
+        tabIndex = INDEX_TAB_PROVINCE;
+        this.provinceIndex = position;
+        Province province = this.provinces.get(position);
+        textViewProvince.setText(province.name);
+
+        listView.setAdapter(provinceAdapter);
+        if (provinceIndex != INDEX_INVALID) {
+            listView.setSelection(provinceIndex);
+        }
+    }
+
+    private void setCities(List<City> cities, int position){
+        if(cities == null || cities.size() == 0){
+            return;
+        }
+        this.cities = cities;
+        tabIndex = INDEX_TAB_CITY;
+        this.cityIndex = position;
+        City city = this.cities.get(position);
+        textViewCity.setText(city.name);
+        // 缓存省-市数据
+        long provinceId = cities.get(0).province_id;
+        if(!province2city.containsKey(provinceId)){
+            List<City> cityList = new ArrayList<>();
+            ListUtils.copy(cities, cityList);
+            province2city.put(provinceId, cityList);
+        }
+
+        listView.setAdapter(cityAdapter);
+        if (cityIndex != INDEX_INVALID) {
+            listView.setSelection(cityIndex);
+        }
+    }
+
+    private void setCountries(List<County> countries, int position){
+        if(countries == null || countries.size() == 0){
+            return;
+        }
+        this.counties = countries;
+        tabIndex = INDEX_TAB_COUNTY;
+        this.countyIndex = position;
+        County county = this.counties.get(position);
+        textViewCounty.setText(county.name);
+        // 缓存市-区数据
+        long cityId = counties.get(0).city_id;
+        if(!city2county.containsKey(cityId)){
+            List<County> countyList = new ArrayList<>();
+            ListUtils.copy(counties, countyList);
+            city2county.put(cityId, countyList);
+        }
+
+        listView.setAdapter(countyAdapter);
+        if (countyIndex != INDEX_INVALID) {
+            listView.setSelection(countyIndex);
+        }
+
+    }
+
+    /**
+     * 刷新地址选择器
+     */
+    private void refreshSelector(){
+        progressBar.setVisibility(View.GONE);
+        updateTabsVisibility();
+        updateIndicator();
     }
 
 }

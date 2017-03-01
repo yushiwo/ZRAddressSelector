@@ -63,4 +63,9 @@ public class BottomSelectorDialog extends Dialog {
         return dialog;
     }
 
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        this.selector.clearCacheData();
+    }
 }
