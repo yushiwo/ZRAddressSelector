@@ -33,7 +33,9 @@
 
 ### 数据结构设计
 当前的地址信息按照省、市、区/县、街道四级划分，前一级总是和后一级相关联。
+
 + **Province**
+
 ```
 public class Province {
     public long id;
@@ -41,6 +43,7 @@ public class Province {
 }
 ```
 + **City**
+
 ```
 public class City  {
     public long id;
@@ -49,6 +52,7 @@ public class City  {
 }
 ```
 + **County**
+
 ```
 public class County {
     public long id;
@@ -57,6 +61,7 @@ public class County {
 }
 ```
 + **Street**
+
 ```
 public class Street {
     public long id;
@@ -115,27 +120,32 @@ province2city.put(provinceId, cities);
 
 ## 控件使用
 1. gradle导入控件
+
 ```
 compile 'com.zr.addressselector:library:1.0.1'
 ```
 
 2. Activity实现`OnAddressSelectedListener`接口
+
 ```
 public class MainActivity extends AppCompatActivity implements OnAddressSelectedListener
 ```
 
 3. 展现地址选择器
+
 ```
 dialog = new BottomSelectorDialog(MainActivity.this);
 dialog.setOnAddressSelectedListener(MainActivity.this);
 dialog.show();
 ```
 4. 根据网络返回，设置数据
+
 ```
 dialog.getSelector().setProvinces(Collections.singletonList(province));
 ```
 
 5. 控件提供的几个设置方法
+
 ```
 /**
      * 设置回调接口
